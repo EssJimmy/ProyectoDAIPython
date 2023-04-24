@@ -3,11 +3,14 @@ import matplotlib.pyplot as plt
 
 
 def read_file(file_name: str):
-    directory = "C:\\Users\\jaime\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Python\\Equipo1"
-    file = pd.read_csv(directory+file_name, encoding="UTF-8", names=["Date", "Close/Last", "Volume", "Open", "High",
-                                                                     "Low"])
-    data = sort_by_date(file)
-    return data
+    if file_name.endswith(".csv"):
+        directory = "C:\\Users\\jaime\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Python\\Equipo1"
+        file = pd.read_csv(directory+file_name, encoding="UTF-8", names=["Date", "Close/Last", "Volume", "Open", "High",
+                                                                         "Low"])
+        data = sort_by_date(file)
+        return data
+    else:
+        print("Selected file is not a .csv file!")
 
 
 def sort_by_date(data: pd.DataFrame):
