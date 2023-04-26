@@ -20,12 +20,16 @@ def sort_by_date(data: pd.DataFrame):
 
 # Problema 1, 3 y 5 (solo cambiamos el nombre de la columna del que queremos estos valores)
 def find_month_values(data: pd.DataFrame, column="Close/Last"):
+    if column == "Close/Last":
+        data[column] = data[column].str.strip("$")
+        data[column] = data[column].astype(float)
+
     avg_df = data
     avg_df["month"] = pd.to_datetime(avg_df["Date"]).dt.month
     avg_df["year"] = pd.to_datetime(avg_df["Date"]).dt.year
     max_value = avg_df.groupby(["year", "month"], as_index=False)[column].max()
     min_value = avg_df.groupby(["year", "month"], as_index=False)[column].min()
-    avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=True)
+    avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=False)
 
     return max_value, min_value, avg_value
 
