@@ -2,11 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def read_file(file_name: str):
+def read_file(directory: str, file_name: str):
     if file_name.endswith(".csv"):
-        directory = "C:\\Users\\jaime\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Python\\Equipo1"
-        file = pd.read_csv(directory+file_name, encoding="UTF-8", names=["Date", "Close/Last", "Volume", "Open", "High",
-                                                                         "Low"])
+        file = pd.read_csv(directory+file_name, encoding="UTF-8", header=0)
         data = sort_by_date(file)
         return data
     else:
@@ -14,8 +12,8 @@ def read_file(file_name: str):
 
 
 def sort_by_date(data: pd.DataFrame):
-    data["Date"]: pd.to_datetime(data["Date"])
-    data.sort_values(by="Date")
+    data["Date"] = pd.to_datetime(data["Date"], format="%m/%d/%Y")
+    data.sort_values(by="Date", inplace=True)
 
     return data
 
@@ -23,11 +21,11 @@ def sort_by_date(data: pd.DataFrame):
 # Problema 1, 3 y 5 (solo cambiamos el nombre de la columna del que queremos estos valores)
 def find_month_values(data: pd.DataFrame, column="Close/Last"):
     avg_df = data
-    avg_df["month"] = pd.to_datetime(avg_df["date"]).dt.month
-    avg_df["month"] = pd.to_datetime(avg_df["date"]).dt.year
+    avg_df["month"] = pd.to_datetime(avg_df["Date"]).dt.month
+    avg_df["year"] = pd.to_datetime(avg_df["Date"]).dt.year
     max_value = avg_df.groupby(["year", "month"], as_index=False)[column].max()
     min_value = avg_df.groupby(["year", "month"], as_index=False)[column].min()
-    avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean()
+    avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=True)
 
     return max_value, min_value, avg_value
 
