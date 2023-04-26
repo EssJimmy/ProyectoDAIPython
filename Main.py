@@ -1,5 +1,4 @@
 import Proyecto as Pr
-import pandas as pd
 
 
 directory = "C:\\Users\\jaime\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Python\\Equipo1\\"
