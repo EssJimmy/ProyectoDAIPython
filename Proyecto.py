@@ -46,35 +46,15 @@ def earnings(data: pd.DataFrame):
 
 
 # Problema 6
-# Esto tiene que ser cambiado por completo, ya que estoy haciendo un ejercicio que no me pidieron
-# Lo que pide es que ploteemos el promedio, maximo y minimo de tres columnas, no de todas las columnas hay
-# del único que tenemos que plotear histórico es de la ganancia, pero eso ya está ez
 def plot_shares(data: pd.DataFrame, column: str):
-    values = []
-    x = []
+    max_value, min_value, avg_value = find_month_values(data, column)
+    fig, axes = plt.subplots(nrows=2, ncols=2)
 
-    if column == "Close/Last" or "Total" or "Ganancia":
-        max_value, min_value, avg_value = find_month_values(data, column)
-        for value in max_value["Close/Last"].astype(float).values:
-            values.append(value)
+    max_value[column].plot(x="Mes", y="Valor", title=column, color="g", ax=axes[0][0])
+    min_value[column].plot(x="Mes", y="Valor", title=column, color="b", ax=axes[0][1])
+    avg_value[column].plot(x="Mes", y="Valor", title=column, color="r", ax=axes[1][0])
 
-        for value in min_value["Close/Last"].astype(float).values:
-            values.append(value)
-
-        for value in values:
-            index = find_index_values(data, column, value)
-            for i in index:
-                x.append(i)
-
-        for value in avg_value["Close/Last"].astype(float).values:
-            values.append(value)
-
-    print(len(x))
-    print(len(values))
-    data[column].plot(x=column, y="Valor", title=column)
+    if column == "Ganancias":
+        data[column].plot(x="Días", y="Valor histórico", title=column, color="c", subplots=True, ax=axes[1][1])
 
     plt.show()
-
-
-def find_index_values(data: pd.DataFrame, column: str, value: float):
-    return data[data[column] == value].index.values.tolist()

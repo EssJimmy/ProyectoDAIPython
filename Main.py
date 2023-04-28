@@ -10,4 +10,4 @@ Pr.total_transactions(df_amazon)
 Pr.earnings(df_amazon)
 print(df_amazon)
 
-Pr.plot_shares(df_amazon, "Close/Last")
+Pr.plot_shares(df_amazon, "Ganancias")
