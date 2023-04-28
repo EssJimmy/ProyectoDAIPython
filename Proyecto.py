@@ -48,13 +48,15 @@ def earnings(data: pd.DataFrame):
 # Problema 6
 def plot_shares(data: pd.DataFrame, column: str):
     max_value, min_value, avg_value = find_month_values(data, column)
-    fig, axes = plt.subplots(nrows=2, ncols=2)
-
-    max_value[column].plot(x="Mes", y="Valor", title=column, color="g", ax=axes[0][0])
-    min_value[column].plot(x="Mes", y="Valor", title=column, color="b", ax=axes[0][1])
-    avg_value[column].plot(x="Mes", y="Valor", title=column, color="r", ax=axes[1][0])
-
     if column == "Ganancias":
-        data[column].plot(x="Días", y="Valor histórico", title=column, color="c", subplots=True, ax=axes[1][1])
+        fig, axes = plt.subplots(nrows=2, ncols=2)
+        max_value[column].plot(color="g", ax=axes[0][0])
+        min_value[column].plot(color="b", ax=axes[0][1])
+        avg_value[column].plot(color="r", ax=axes[1][0])
+        data[column].plot(color="c", subplots=True, ax=axes[1][1])
+    else:
+        max_value[column].plot(color="g")
+        min_value[column].plot(color="b")
+        avg_value[column].plot(color="r")
 
     plt.show()
