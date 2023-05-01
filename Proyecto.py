@@ -72,16 +72,15 @@ def plot_shares(data: pd.DataFrame, column: str):
     max_value, min_value, avg_value = find_month_values(data, column)  # obtenemos los valores en DataFrames
     if column == "Ganancias":  # checamos si estamos graficando ganancias, para ver si vamos a graficar el valor
         # histórico
-        fig, axes = plt.subplots(nrows=2, ncols=2)  # dividimos la gráfica en 4 para poder verlos mejor, se verá como
-        # matriz de 2x2
-        max_value[column].plot(color="g", ax=axes[0][0])  # gráfica del valor mínimo en la coordenada (0, 0)
-        min_value[column].plot(color="b", ax=axes[0][1])  # gráfica del valor mínimo en la coordenada (0, 1)
-        avg_value[column].plot(color="r", ax=axes[1][0])  # gráfica del valor mínimo en la coordenada (1, 0)
-        data[column].plot(color="c", subplots=True, ax=axes[1][1])  # gráfica del valor mínimo en la coordenada (1, 1)
+        figs, axes = plt.subplots(nrows=2, ncols=2)
+        max_value[column].plot(color="g", ax=axes[0][0])
+        min_value[column].plot(color="b", ax=axes[0][1])
+        avg_value[column].plot(color="r", ax=axes[1][0])
+        data[column].hist(ax=axes[1][1])
     else:
-        fig, axes = plt.subplots(3)  # dividimos la gráfica en 3, se verán horizontalmente
-        max_value[column].plot(color="g", ax=axes[0])  # se verá arriba
-        min_value[column].plot(color="b", ax=axes[1])  # se verá en medio
-        avg_value[column].plot(color="r", ax=axes[2])  # se verá abajo
+        figs, axes = plt.subplots(3)
+        max_value[column].plot(color="g", ax=axes[0])
+        min_value[column].plot(color="b", ax=axes[1])
+        avg_value[column].plot(color="r", ax=axes[2])
 
     plt.show()
