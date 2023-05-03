@@ -1,5 +1,5 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 
 # Definimos una función que nos deje leer todos los .csvs para poder manejarlos más fácil
@@ -68,19 +68,60 @@ def earnings(data: pd.DataFrame):
 # Problema 6
 # este método busca graficar las diferentes columnas que se nos piden, obtiene para esto los valores máximo, mínimo y
 # promedio para ser utilizados
-def plot_shares(data: pd.DataFrame, column: str):
-    max_value, min_value, avg_value = find_month_values(data, column)  # obtenemos los valores en DataFrames
-    if column == "Ganancias":  # checamos si estamos graficando ganancias, para ver si vamos a graficar el valor
-        # histórico
-        figs, axes = plt.subplots(nrows=2, ncols=2)
-        max_value[column].plot(color="g", ax=axes[0][0])
-        min_value[column].plot(color="b", ax=axes[0][1])
-        avg_value[column].plot(color="r", ax=axes[1][0])
-        data[column].hist(ax=axes[1][1])
-    else:
-        figs, axes = plt.subplots(3)
-        max_value[column].plot(color="g", ax=axes[0])
-        min_value[column].plot(color="b", ax=axes[1])
-        avg_value[column].plot(color="r", ax=axes[2])
+def plot_shares(data: list[pd.DataFrame], column: str, names: list[str]):
+    if column == "Ganancias":
+        fig1, ax1 = plt.subplots()
+        for i in range(len(data)):
+            fig1.suptitle("Valor máximo de las ganancias")
+            max_value = find_month_values(data[i], column)[0]
+            max_value[column].plot(ax=ax1, label=names[i])
+        plt.legend()
+        plt.show()
 
-    plt.show()
+        fig2, ax2 = plt.subplots()
+        for i in range(len(data)):
+            fig2.suptitle("Valor mínimo de las ganancias")
+            min_value = find_month_values(data[i], column)[1]
+            min_value[column].plot(ax=ax2, label=names[i])
+        plt.legend()
+        plt.show()
+
+        fig3, ax3 = plt.subplots()
+        for i in range(len(data)):
+            fig3.suptitle("Valor promedio de las ganancias")
+            avg_value = find_month_values(data[i], column)[2]
+            avg_value[column].plot(ax=ax3, label=names[i])
+        plt.legend()
+        plt.show()
+
+        fig4, ax4 = plt.subplots(len(names), figsize=(20, 20))
+        for i in range(len(data)):
+            fig4.suptitle("Valor histórico de las ganancias")
+            data[i][column].hist(ax=ax4[i])
+            ax4[i].set_title(names[i])
+        plt.show()
+
+    else:
+        fig1, ax1 = plt.subplots()
+        for i in range(len(data)):
+            fig1.suptitle(f"Valor máximo de {column}")
+            max_value = find_month_values(data[i], column)[0]
+            max_value[column].plot(ax=ax1, label=names[i])
+        plt.legend()
+        plt.show()
+
+        fig2, ax2 = plt.subplots()
+        for i in range(len(data)):
+            fig2.suptitle(f"Valor mínimo de {column}")
+            min_value = find_month_values(data[i], column)[1]
+            min_value[column].plot(ax=ax2, label=names[i])
+        plt.legend()
+        plt.show()
+
+        fig3, ax3 = plt.subplots()
+        for i in range(len(data)):
+            fig3.suptitle(f"Valor promedio de {column}")
+            avg_value = find_month_values(data[i], column)[2]
+            avg_value[column].plot(ax=ax3)
+        plt.legend()
+        plt.show()
