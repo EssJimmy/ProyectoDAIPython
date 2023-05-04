@@ -7,7 +7,8 @@ from matplotlib import pyplot as plt
 # read_csv
 def read_file(directory: str, file_name: str) -> pd.DataFrame:
     if file_name.endswith(".csv"):  # checamos que sea un archivo .csv para que no haya ningún tipo de fallo
-        file = pd.read_csv(directory+file_name, encoding="UTF-8", header=0)  # definimos la línea 0 como los nombres de
+        file = pd.read_csv(directory + file_name, encoding="UTF-8",
+                           header=0)  # definimos la línea 0 como los nombres de
         # cabecera del DataFrame
         data = format_file(file)  # llamo a la función format_file que va a parsear los datos de algunas columnas a los
         # tipos que quiero, así como ordenarlos por fecha
@@ -62,66 +63,84 @@ def earnings(data: pd.DataFrame):
     data["Open"] = data["Open"].str.strip("$")  # lo unico que cambia en este método es que parseamos la columna de
     # open para poder hacer las operaciones pertinentes, por lo demás tenemos lo mismo
     data["Open"] = data["Open"].astype(float)
-    data["Ganancias"] = data["Open"]/(data["Close/Last"] - 1)  # añadimos la columna ganancias
+    data["Ganancias"] = data["Open"] / (data["Close/Last"] - 1)  # añadimos la columna ganancias
 
 
 # Problema 6
 # este método busca graficar las diferentes columnas que se nos piden, obtiene para esto los valores máximo, mínimo y
 # promedio para ser utilizados
 def plot_shares(data: list[pd.DataFrame], column: str, names: list[str]):
+    dates = get_months(data[0])  # obtenemos las fechas tipo yyyy/mm para poder añadir los títulos en x
+
+    fig1, ax1 = plt.subplots()  # definimos una nueva figura sobre la que graficar y un eje en el que usamos .plot()
+    plt.setp(ax1, xticklabels=[dates[0], dates[9], dates[19], dates[34], dates[29], dates[39], dates[49],
+                               dates[59]])  # fijamos los nombres de los puntos de los ejes
+    for i in range(len(data)):
+        fig1.suptitle(f"Valor máximo de {column}")  # título general del plot
+        max_value = find_month_values(data[i], column)[0]  # valores máximos por mes de la columna
+        max_value[column].plot(ax=ax1, label=names[i])  # graficamos sobre el eje 1 y le asignamos el nombre de empresa
+    plt.legend()  # muestra una simbología indicando que color de línea toma cada empresa
+    plt.show()  # muestra el plot en la figura designada
+
+    fig2, ax2 = plt.subplots()  # definimos una nueva figura sobre la que graficar y un eje en el que usamos .plot()
+    plt.setp(ax2, xticklabels=[dates[0], dates[9], dates[19], dates[29], dates[34], dates[39], dates[49],
+                               dates[59]])  # fijamos los nombres de los puntos de los ejes
+    for i in range(len(data)):
+        fig2.suptitle(f"Valor mínimo de {column}")  # título general del plot
+        min_value = find_month_values(data[i], column)[1]  # valores mínimos por mes de la columna
+        min_value[column].plot(ax=ax2, label=names[i])  # graficamos sobre el eje 2 y le asignamos el nombre de empresa
+    plt.legend()  # muestra una simbología indicando que color de línea toma cada empresa
+    plt.show()  # muestra el plot en la figura designada
+
+    # definimos un plot para el valor promedio
+    fig3, ax3 = plt.subplots()  # definimos una nueva figura sobre la que graficar y un eje en el que usamos .plot()
+    plt.setp(ax3, xticklabels=[dates[0], dates[9], dates[19], dates[29], dates[34], dates[39], dates[49],
+                               dates[59]])  # fijamos los nombres de los puntos de los ejes
+    for i in range(len(data)):
+        fig3.suptitle(f"Valor promedio de {column}")  # título general del plot
+        avg_value = find_month_values(data[i], column)[2]  # valores promedio por mes de la columna
+        avg_value[column].plot(ax=ax3, label=names[i])  # graficamos sobre el eje 3 y le asignamos el nombre de empresa
+    plt.legend()  # muestra una simbología indicando que color de línea toma cada empresa
+    plt.show()  # muestra el plot en la figura designada
+
+    # en dado caso de que estemos graficando la columna ganancias tenemos que hacer un histograma
     if column == "Ganancias":
-        fig1, ax1 = plt.subplots()
+        fig4, ax4 = plt.subplots(len(names), figsize=(20, 20))  # definimos una nueva figura sobre la que graficar y un
+        # eje en el que usamos .plot()
+        plt.setp(ax4, xticklabels=[dates[0], dates[9], dates[19], dates[29], dates[34], dates[39], dates[49],
+                                   dates[59]])  # fijamos los nombres de los puntos de los ejes
         for i in range(len(data)):
-            fig1.suptitle("Valor máximo de las ganancias")
-            max_value = find_month_values(data[i], column)[0]
-            max_value[column].plot(ax=ax1, label=names[i])
-        plt.legend()
-        plt.show()
+            fig4.suptitle("Valor histórico de las ganancias")  # título general del plot
+            data[i][column].hist(ax=ax4[i])  # graficamos los valores históricos de las ganancias por cada subplot
+            ax4[i].set_title(names[i])  # fijamos los títulos de cada subplot para señalar las diferencias
+        plt.show()  # muestra el plot en la figura designada
 
-        fig2, ax2 = plt.subplots()
-        for i in range(len(data)):
-            fig2.suptitle("Valor mínimo de las ganancias")
-            min_value = find_month_values(data[i], column)[1]
-            min_value[column].plot(ax=ax2, label=names[i])
-        plt.legend()
-        plt.show()
 
-        fig3, ax3 = plt.subplots()
-        for i in range(len(data)):
-            fig3.suptitle("Valor promedio de las ganancias")
-            avg_value = find_month_values(data[i], column)[2]
-            avg_value[column].plot(ax=ax3, label=names[i])
-        plt.legend()
-        plt.show()
+def get_months(data: pd.DataFrame) -> list:
+    df_aux = data  # copiamos los datos del DataFrame a otro para evitar cosas indeseadas
+    df_aux["month"] = pd.to_datetime(df_aux["Date"]).dt.month  # añadimos una columna llamada mes para después
+    df_aux["year"] = pd.to_datetime(df_aux["Date"]).dt.year  # lo mismo con el año
 
-        fig4, ax4 = plt.subplots(len(names), figsize=(20, 20))
-        for i in range(len(data)):
-            fig4.suptitle("Valor histórico de las ganancias")
-            data[i][column].hist(ax=ax4[i])
-            ax4[i].set_title(names[i])
-        plt.show()
+    mon = []  # usamos una lista para llenar todos los meses posibles
+    for month in df_aux["month"].values:
+        aux = str(month)  # parseamos el tipo datetime a str
+        if len(aux) == 1:  # si es un mes con solo un dígito añadimos un 0 para evitar que Python haga de las suyas
+            aux = "0" + aux
+        mon.append(aux)
 
-    else:
-        fig1, ax1 = plt.subplots()
-        for i in range(len(data)):
-            fig1.suptitle(f"Valor máximo de {column}")
-            max_value = find_month_values(data[i], column)[0]
-            max_value[column].plot(ax=ax1, label=names[i])
-        plt.legend()
-        plt.show()
+    # hacemos lo mismo que hicimos con mes pero ahora con año
+    yr = []
+    for year in df_aux["year"].values:
+        yr.append(str(year))
 
-        fig2, ax2 = plt.subplots()
-        for i in range(len(data)):
-            fig2.suptitle(f"Valor mínimo de {column}")
-            min_value = find_month_values(data[i], column)[1]
-            min_value[column].plot(ax=ax2, label=names[i])
-        plt.legend()
-        plt.show()
+    # añadimos los valores de mes y año en formato yyyy-mm, si fuera yyyy-m, Python lo acomoda como quiere, por lo que
+    # tenemos que ponerlo en ese formato para evitar problemas
+    str_aux = []
+    for i in range(len(mon)):
+        str_aux.append(yr[i] + "-" + mon[i])
 
-        fig3, ax3 = plt.subplots()
-        for i in range(len(data)):
-            fig3.suptitle(f"Valor promedio de {column}")
-            avg_value = find_month_values(data[i], column)[2]
-            avg_value[column].plot(ax=ax3)
-        plt.legend()
-        plt.show()
+    set_aux = set(str_aux)  # cambiamos a un set para poder eliminar los duplicados
+    ans = list(set_aux)  # cambiamos a una lista para manejarla de manera más sencilla
+    ans.sort()  # al cambiar a set los valores se desordenan, por lo que tenemos que ordenarlos
+
+    return ans  # regresamos la lista ya ordenada

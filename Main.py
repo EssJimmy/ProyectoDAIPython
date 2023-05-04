@@ -15,4 +15,4 @@ for frame in df_list:
     Pr.total_transactions(frame)
     Pr.earnings(frame)
 
-Pr.plot_shares(df_list, "Ganancias", names_list)
+Pr.plot_shares(df_list, "Close/Last", names_list)
