@@ -1,7 +1,7 @@
 import Proyecto as Pr
 
 
-directory = "C:\\Users\\jaime\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Python\\Equipo1\\"
+directory = "C:\\Users\\Jimmy\\Documents\\ITAM\\Desarrollo de aplicaciones informáticas\\Equipo1\\"
 
 df_amazon = Pr.read_file(directory, "Amazon.csv")
 df_amex = Pr.read_file(directory, "AmericanExpress.csv")
@@ -15,4 +15,4 @@ for frame in df_list:
     Pr.total_transactions(frame)
     Pr.earnings(frame)
 
-Pr.plot_shares(df_list, "Close/Last", names_list)
+Pr.plot_shares(df_list, "Ganancias", names_list)

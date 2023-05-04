@@ -42,8 +42,8 @@ def find_month_values(data: pd.DataFrame, column="Close/Last") -> tuple:
     # encontremos los valores máximos, mínimos y promedio de ese mes, primero por año y luego por mes
     min_value = avg_df.groupby(["year", "month"], as_index=False)[column].min()
     avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=False)  # numeric_only sirve
-    # para indicar que puede que haya valores no numéricos, es necesario señalar esto por que a Python no le gusta tener
-    # que adivinar si solo va a haber números o no
+    # para indicar que puede que haya valores no numéricos, es necesario señalar esto porque a Python no le gusta tener
+    # que adivinar si solo va a haber números o no, esto gracias a que el .csv de Danone tiene columnas con NaN
 
     return max_value, min_value, avg_value  # regresamos 3 DataFrames con los valores de máximo, minimo y promedio
 
