@@ -35,13 +35,13 @@ def format_file(data: pd.DataFrame) -> pd.DataFrame:
 # como el problema 1, 3 y 5 hacen lo mismo podemos utilizar una función con un valor default para esto,
 # pedimos como entrada un DataFrame y una cadena, por default su valor será "Close/Last"
 def find_month_values(data: pd.DataFrame, column="Close/Last") -> tuple:
-    avg_df = data  # copiamos los datos del DataFrame a otro para evitar cosas indeseadas
-    avg_df["month"] = pd.to_datetime(avg_df["Date"]).dt.month  # añadimos una columna llamada mes para después
-    avg_df["year"] = pd.to_datetime(avg_df["Date"]).dt.year  # lo mismo con el año
-    max_value = avg_df.groupby(["year", "month"], as_index=False)[column].max()  # agrupamos el DataFrame para que solo
+    aux_df = data  # copiamos los datos del DataFrame a otro para evitar cosas indeseadas
+    aux_df["month"] = pd.to_datetime(aux_df["Date"]).dt.month  # añadimos una columna llamada mes para después
+    aux_df["year"] = pd.to_datetime(aux_df["Date"]).dt.year  # lo mismo con el año
+    max_value = aux_df.groupby(["year", "month"], as_index=False)[column].max()  # agrupamos el DataFrame para que solo
     # encontremos los valores máximos, mínimos y promedio de ese mes, primero por año y luego por mes
-    min_value = avg_df.groupby(["year", "month"], as_index=False)[column].min()
-    avg_value = avg_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=False)  # numeric_only sirve
+    min_value = aux_df.groupby(["year", "month"], as_index=False)[column].min()
+    avg_value = aux_df.groupby(["year", "month"], as_index=False)[column].mean(numeric_only=False)  # numeric_only sirve
     # para indicar que puede que haya valores no numéricos, es necesario señalar esto por que a Python no le gusta tener
     # que adivinar si solo va a haber números o no
 
@@ -52,7 +52,7 @@ def find_month_values(data: pd.DataFrame, column="Close/Last") -> tuple:
 # Esto añade la columna total al DataFrame original
 def total_transactions(data: pd.DataFrame):
     data["Volume"] = data["Volume"].astype(float)  # parseamos la columna volumen a un float para poder hacer una
-    # multiplicación, no necesitamos quitar en signo de moneda porque no tiene
+    # multiplicación, no necesitamos quitar el signo de moneda porque no tiene
     data["Total"] = data["Close/Last"] * data["Volume"]  # no necesitamos regresar nada porque ya lo añadimos al
     # DataFrame original con este comando
 
